@@ -30,7 +30,7 @@ library(dplyr)
 library(GGally)
 ```
 
-## Part 1 - Exploratory Data Analysis (EDA)
+# Exploratory Data Analysis (EDA)
 
 We start our analysis by cleaning data and transforming some variables.
 
@@ -96,9 +96,9 @@ ggplot(data = ames_train, aes(x = Neighborhood, y = price/1000)) +
 ```
 
 
-## Part 2 - Development and assessment of an initial model, following a semi-guided process of analysis
+# Development and assessment of an initial model, following a semi-guided process of analysis
 
-### Section 2.1 An Initial Model
+## An Initial Model
 
 Our initial models consist of 10 variables, selected based on above plots.
 
@@ -114,7 +114,7 @@ The model's adjusted R-squared is .8958 and all the selected variables are stati
 
 * * *
 
-### Section 2.2 Model Selection
+## Model Selection
 
 For initial model selection we use stepwise AIC and BIC methods.
 
@@ -135,7 +135,7 @@ summary(model.init.BIC)
 
 We can see that the AIC model includes all 10 ten variables, while from BIC model 3 variables were dropped. For now, we continue our initial analysis with the AIC model.
 
-### Section 2.3 Initial Model Residuals
+## Initial Model Residuals
 
 One way to assess the performance of a model is to examine the model's residuals. 
 
@@ -155,7 +155,7 @@ Finally, the residuals vs leverage plot shows if there are any influential outli
 
 * * *
 
-### Section 2.4 Initial Model RMSE
+## Initial Model RMSE
 
 RMSE for our initial AIC model is calculated below.
 
@@ -169,7 +169,7 @@ rmse.init
 
 * * *
 
-### Section 2.5 Overfitting 
+##  Overfitting 
 
 Next we will use our model to predict housing prices for the test data to see how well the model fits to unseen data.
 
@@ -211,13 +211,13 @@ We can see that the RMSE for the test data is somewhat higher than it was for th
 
 
 
-## Part 3 Development of a Final Model
+# Development of a Final Model
 
 Now that you have developed an initial model to use as a baseline, create a final model with *at most* 20 variables to predict housing prices in Ames, IA, selecting from the full array of variables in the dataset and using any of the tools that we introduced in this specialization.  
 
 Carefully document the process that you used to come up with your final model, so that you can answer the questions below.
 
-### Section 3.1 Final Model
+## Final Model
 
 Our final model consists of 9 variables plus 2 variable interactions. Interestingly log area is not included into the model with highest posterior probability.
 
@@ -235,20 +235,20 @@ summary(model.final)
 
 * * *
 
-### Section 3.2 Transformation
+## Transformation
 
 We did use log transformation for variable Lot.Area, Area, X1st.Flr.SF. After log transformation the distribution of variables ~ normal distribution, enabling better fit.
 
 
 * * *
 
-### Section 3.3 Variable Interaction
+## Variable Interaction
 
 We used 2 variable interactions: log.Area:Overall.Qual and log.Area:age. The idea of the interactions is that a third variable influences the relationship between independent and dependent variable. In this study variable interactions were selected intuitively and by experimenting.
 
 * * *
 
-### Section 3.4 Variable Selection
+## Variable Selection
 
 The initial variable selection was based on the observed relations betweend the independent and dependent variables and using AIC stepwise selection. For further selection the BAS package was used. The BMA process reduces or eliminates the coefficients that have a low posterior probability.
 
@@ -283,7 +283,7 @@ ggplot(coefs_bas, aes(x = parameter, y = post_pne0)) +
 ```
 
 
-### Section 3.5 Model Testing
+## Model Testing
 
 By calculating RMSE for both train and test data, we see that RMSE for test data is only slightly higher than for the training data, indicating that the model is not overfitting. With Bayesian model averaging using HPM method the RMSE is even slightly lower.
 
@@ -320,9 +320,9 @@ coverage.prob.final
 
 * * *
 
-## Part 4 Final Model Assessment
+# Final Model Assessment
 
-### Section 4.1 Final Model Residual
+##  Final Model Residual
 
 ```{r}
 par(mfrow=c(2,2))
@@ -333,15 +333,15 @@ Residual plots look OK, similarly as discussed in section 2.3, apart from that n
 
 * * *
 
-### Section 4.2 Final Model RMSE
+## Final Model RMSE
 
-RMSE's were calculated in section 3.5. RMSE for test data is reasonably good and there is not much overfitting.
+RMSE's were calculated in section 5.5. RMSE for test data is reasonably good and there is not much overfitting.
 
-### Section 4.3 Final Model Evaluation
+##  Final Model Evaluation
 
 The model is able to generalize quite well and thus provide predictions usually within ± $22000. The model does not perform very well for very high and very low price houses. It also only works for houses sold under normal selling conditions. 
 
-### Section 4.4 Final Model Validation
+## Final Model Validation
 
 
 
@@ -413,15 +413,15 @@ Using the median probability model to generate out-of-sample predictions and a 9
 
 ```{r}
 resid.HPM = ames_validation$price - exp(pred.valid.HPM$fit)
-plot(ames_validation$price, resid.HPM, 
-     xlab="Price",
+plot(ames_validation$price/1000, resid.HPM, 
+     xlab="Price k$",
      ylab="Residuals")
 ```
 
 As the price of the house increases, positive residuals tend to increase as well. This means that model tends underestimate the prices of more expensive houses. Similarly, but to lesser extend, the model tends to overestimate prices of some cheaper houses.
 
-## Part 5 Conclusion
+# Conclusion
 
-Using Bayesian model averaging the model is able to predict price within ± $20500. Houses location, lot area, age and overall quality and condition are important predictors for the price. The model is less consistent when predicting prices of houses with very high or low price. The model works only for houses sold under normal selling conditions.
+Using Bayesian model averaging the model is able to predict price within ± $20500. Houses' location, lot area, age and overall quality and condition are important predictors for the price. The model is less consistent when predicting prices of houses with very high or low price. The model works only for houses sold under normal selling conditions.
 
 During this exercise I have gained more experience in model selection, validation and fine tuning. All in all this was a very good exercise.
